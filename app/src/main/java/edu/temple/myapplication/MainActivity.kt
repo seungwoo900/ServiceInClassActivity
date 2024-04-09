@@ -5,22 +5,30 @@ import android.content.Intent
 import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var timerBinder: TimerService.TimerBinder
-    var isConnected = false
+    val handler = Handler(Looper.getMainLooper()) {
+
+        true
+    }
+
+    var timerBinder: TimerService.TimerBinder? = null
+//    var isConnected = false
 
     val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             timerBinder = service as TimerService.TimerBinder
-            isConnected = true
+//            isConnected = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            isConnected = false
+//            isConnected = false
+            timerBinder = null
         }
 
     }
@@ -36,15 +44,18 @@ class MainActivity : AppCompatActivity() {
         )
 
         findViewById<Button>(R.id.startButton).setOnClickListener {
-            if (isConnected) timerBinder.start(100)
+            timerBinder?.start(100)
+//            if (isConnected) timerBinder.start(100)
         }
 
         findViewById<Button>(R.id.pauseButton).setOnClickListener {
-            if (isConnected) timerBinder.pause()
+            timerBinder?.pause()
+//            if (isConnected) timerBinder.pause()
         }
         
         findViewById<Button>(R.id.stopButton).setOnClickListener {
-            if (isConnected) timerBinder.stop()
+            timerBinder?.stop()
+//            if (isConnected) timerBinder.stop()
         }
     }
 
