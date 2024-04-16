@@ -22,16 +22,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     var timerBinder: TimerService.TimerBinder? = null
-//    var isConnected = false
 
     val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             timerBinder = service as TimerService.TimerBinder
-//            isConnected = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-//            isConnected = false
             timerBinder = null
         }
 
@@ -49,17 +46,14 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.startButton).setOnClickListener {
             timerBinder?.start(100)
-//            if (isConnected) timerBinder.start(100)
         }
 
         findViewById<Button>(R.id.pauseButton).setOnClickListener {
             timerBinder?.pause()
-//            if (isConnected) timerBinder.pause()
         }
         
         findViewById<Button>(R.id.stopButton).setOnClickListener {
             timerBinder?.stop()
-//            if (isConnected) timerBinder.stop()
         }
     }
 
@@ -75,21 +69,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.action_start_timer -> Toast.makeText(this, "Starting timer", Toast.LENGTH_SHORT).show()
 
-            R.id.action_pause_timer -> Toast.makeText(this, "Pausing timer", Toast.LENGTH_SHORT).show()
+        when(item.itemId) {
+            R.id.action_start_timer -> {
+                timerBinder?.start(100)
+                return true
+            }
+
+            R.id.action_pause_timer -> {
+                timerBinder?.pause()
+                return true
+            }
 
             R.id.action_stop_timer -> {
-                AlertDialog.Builder(this)
-                    .setTitle("Stop confirmation")
-                    .setMessage("Are you sure you would like to stop this timer")
-                    .setPositiveButton("Yes"){dialog,_ -> Toast.makeText(this, "Stopping...", Toast.LENGTH_SHORT).show(); dialog.dismiss()}
-                    .setNegativeButton("Never mind"){dialog,_ -> dialog.cancel()}
-                    .show()
+                timerBinder?.stop()
+                return true
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
+
+
 }
